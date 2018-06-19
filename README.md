@@ -85,6 +85,16 @@ Example:
 php artisan iseed users --database=mysql2
 ```
 
+
+### query
+Optional parameter which specifies the query to run (note: you cannot use this option with the exclude option, and it overrides whatever table name you specify) 
+
+Example:
+```
+// this query doesn't actually selectd anything from users
+php artisan iseed users --query='select * from items where id in (select item_id from store_items where store_id = 32)'
+```
+
 ### max
 Optional parameter which defines the maximum number of entries seeded from a specified table. In case of multiple tables, limit will be applied to all of them.
 
