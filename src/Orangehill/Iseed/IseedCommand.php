@@ -20,7 +20,7 @@ class IseedCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Generate seed file from table';
+    protected $description = 'Generate seed file from table with an optional query';
 
     /**
      * Create a new command instance.
@@ -90,6 +90,7 @@ class IseedCommand extends Command
                     app('iseed')->generateSeed(
                         $table,
                         $this->option('database'),
+                        $this->option('query'),
                         $chunkSize,
                         $exclude,
                         $prerunEvent,
@@ -110,6 +111,7 @@ class IseedCommand extends Command
                     app('iseed')->generateSeed(
                         $table,
                         $this->option('database'),
+                        $this->option('query'),
                         $chunkSize,
                         $exclude,
                         $prerunEvent,
@@ -148,6 +150,7 @@ class IseedCommand extends Command
             array('clean', null, InputOption::VALUE_NONE, 'clean iseed section', null),
             array('force', null, InputOption::VALUE_NONE, 'force overwrite of all existing seed classes', null),
             array('database', null, InputOption::VALUE_OPTIONAL, 'database connection', \Config::get('database.default')),
+            array('query', null, InputOption::VALUE_OPTIONAL, 'query to run against database', null),
             array('max', null, InputOption::VALUE_OPTIONAL, 'max number of rows', null),
             array('exclude', null, InputOption::VALUE_OPTIONAL, 'exclude columns', null),
             array('prerun', null, InputOption::VALUE_OPTIONAL, 'prerun event name', null),

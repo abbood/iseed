@@ -59,7 +59,7 @@ class Iseed
      * @return bool
      * @throws Orangehill\Iseed\TableNotFoundException
      */
-    public function generateSeed($table, $database = null, $max = 0, $exclude = null, $prerunEvent = null, $postrunEvent = null, $dumpAuto = true, $indexed = true, $orderBy = null, $direction = 'ASC')
+    public function generateSeed($table, $database = null, $query = null,  $max = 0, $exclude = null, $prerunEvent = null, $postrunEvent = null, $dumpAuto = true, $indexed = true, $orderBy = null, $direction = 'ASC')
     {
         if (!$database) {
             $database = config('database.default');
@@ -73,7 +73,7 @@ class Iseed
         }
 
         // Get the data
-        $data = $this->getData($table, $max, $exclude, $orderBy, $direction);
+        $data = $this->getData($table, $max, $exclude, $orderBy, $direction, $query);
 
         // Repack the data
         $dataArray = $this->repackSeedData($data);
@@ -128,13 +128,17 @@ class Iseed
      * @param  string $table
      * @return Array
      */
-    public function getData($table, $max, $exclude = null, $orderBy = null, $direction = 'ASC')
+    public function getData($table, $max, $exclude = null, $orderBy = null, $direction = 'ASC', $query = null)
     {
         $result = \DB::connection($this->databaseName)->table($table);
-
-        if (!empty($exclude)) {
-            $allColumns = \DB::connection($this->databaseName)->getSchemaBuilder()->getColumnListing($table);
-            $result = $result->select(array_diff($allColumns, $exclude));
+        if (!empty($query)) {
+            return \DB::connection($this->databaseName)->select(\DB::raw($query));
+        } else {
+            $result = \DB::connection($this->databaseName)->table($table);
+            if (!empty($exclude)) {
+                $allColumns = \DB::connection($this->databaseName)->getSchemaBuilder()->getColumnListing($table);
+                $result = $result->select(array_diff($allColumns, $exclude));
+            }
         }
 
         if($orderBy) {
@@ -410,3 +414,4 @@ class Iseed
         return $this->files->put($databaseSeederPath, $content) !== false;
     }
 }
+
